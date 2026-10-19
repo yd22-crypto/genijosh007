@@ -1,0 +1,6 @@
+{
+  "name": "적혈구의 대모험: 타임어택",
+  "description": "[동물과 에너지] 혈액 순환과 혈액 성분(적혈구, 백혈구, 혈소판, 혈장)의 과학 원리를 배우는 타임어택 런너 게임",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

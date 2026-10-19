@@ -1,0 +1,58 @@
+{
+  "entities": {
+    "GameScore": {
+      "title": "GameScore",
+      "description": "Records of player game runs for leaderboard and score ranking",
+      "type": "object",
+      "properties": {
+        "playerName": {
+          "type": "string",
+          "description": "Player nickname or student ID",
+          "maxLength": 30,
+          "minLength": 1
+        },
+        "score": {
+          "type": "integer",
+          "description": "Final score earned in the game"
+        },
+        "timeLeft": {
+          "type": "integer",
+          "description": "Remaining time in seconds"
+        },
+        "oxygenCollected": {
+          "type": "integer",
+          "description": "Total oxygen items collected in lung zone"
+        },
+        "oxygenDelivered": {
+          "type": "integer",
+          "description": "Total oxygen molecules delivered to tissue cells"
+        },
+        "plateletsCollected": {
+          "type": "integer",
+          "description": "Total platelets collected"
+        },
+        "wbcCollisions": {
+          "type": "integer",
+          "description": "Count of collisions with white blood cells"
+        },
+        "isClear": {
+          "type": "boolean",
+          "description": "Whether the full circulation mission was cleared"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp string when the record was saved"
+        }
+      },
+      "required": ["playerName", "score", "timeLeft", "isClear", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/leaderboard/{scoreId}": {
+      "schema": {
+        "$ref": "#/entities/GameScore"
+      },
+      "description": "Public leaderboard rankings for red blood cell runner game"
+    }
+  }
+}

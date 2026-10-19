@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidGameScore(data) {
+      return data.keys().hasAll(['playerName', 'score', 'timeLeft', 'isClear', 'createdAt']) &&
+        data.keys().hasOnly(['playerName', 'score', 'timeLeft', 'isClear', 'createdAt', 'oxygenCollected', 'oxygenDelivered', 'plateletsCollected', 'wbcCollisions', 'userId']) &&
+        data.playerName is string &&
+        data.playerName.size() >= 1 &&
+        data.playerName.size() <= 30 &&
+        data.score is int &&
+        data.score >= 0 &&
+        data.score <= 1000000 &&
+        data.timeLeft is int &&
+        data.timeLeft >= 0 &&
+        data.timeLeft <= 3600 &&
+        data.isClear is bool &&
+        data.createdAt is string &&
+        data.createdAt.size() <= 64 &&
+        (!('oxygenCollected' in data) || (data.oxygenCollected is int && data.oxygenCollected >= 0 && data.oxygenCollected <= 1000)) &&
+        (!('oxygenDelivered' in data) || (data.oxygenDelivered is int && data.oxygenDelivered >= 0 && data.oxygenDelivered <= 1000)) &&
+        (!('plateletsCollected' in data) || (data.plateletsCollected is int && data.plateletsCollected >= 0 && data.plateletsCollected <= 1000)) &&
+        (!('wbcCollisions' in data) || (data.wbcCollisions is int && data.wbcCollisions >= 0 && data.wbcCollisions <= 1000)) &&
+        (!('userId' in data) || (data.userId is string && data.userId.size() <= 128));
+    }
+
+    // Leaderboard entries
+    match /leaderboard/{scoreId} {
+      allow get, list: if true;
+      allow create: if isValidId(scoreId) && isValidGameScore(incoming());
+      allow update, delete: if false;
+    }
+  }
+}
